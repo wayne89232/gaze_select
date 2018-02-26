@@ -78,6 +78,11 @@
                     timer_m = false
 
                 };
+
+                //new way to count
+                // 1. send notification on enter phase
+                // set a large enough threshold // maybe 500
+                // 2. end on count
             }
             //fail to select
             if(stop){
