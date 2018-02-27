@@ -46,10 +46,5 @@ app.post("/stop_gaze", function(req, res) {
 var sock1 = zmq.socket("req");
 sock1.connect('tcp://localhost:50020');
 
-// var not = {'subject':'task.end', 'data':'time'}
-// var payload = serialize.serialize(not);
-// topic = 'web.' + not['subject']
-// sock1.send(topic)
-
 module.exports = app;
 app.listen(3000);

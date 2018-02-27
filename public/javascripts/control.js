@@ -1,7 +1,7 @@
     $(document).ready(function() {
         //your code here
 
-
+        var trial_count = 10
         var circle_count = 0
         var timer = false
         var timer_m = false
@@ -11,10 +11,10 @@
         var inTime_m = 0
         var taskStart = 0
         var site_list = [
-            [$(window).height() / 3, $(window).width() / 3],
-            [$(window).height() / 3, $(window).width() / 3 * 2],
-            [$(window).height() / 3 * 2, $(window).width() / 3],
-            [$(window).height() / 3 * 2, $(window).width() / 3 * 2]
+            [$(window).height() / 5, $(window).width() / 5],
+            [$(window).height() / 5, $(window).width() / 5 * 3.5],
+            [$(window).height() / 5 * 3.5, $(window).width() / 5],
+            [$(window).height() / 5 * 3.5, $(window).width() / 5 * 3.5]
         ]
         var marker_list = [
             [$(window).height() / 12, $(window).width() / 12],
@@ -38,11 +38,11 @@
                         timer = true
                         inTime = new Date().getTime()
                     }
-                    if((((new Date().getTime())-inTime)/1000 > 2) &&timer) {
+                    if((((new Date().getTime())-inTime)/1000 > 1) &&timer) {
                         // fixate in target
                         $('#ressss').foggy(true)
-                        timer = false
                         gen_marker(circle_count)
+                        timer = false
                     }
                     $('#ressss').html('Fixate '+(((new Date().getTime())-inTime)/1000));
 
@@ -53,17 +53,18 @@
                 };
             }
             if($('#marker').length){
-                if (isNear($('#marker'), 10, event)) {
+                hide_cursor(true)
+                if (isNear($('#marker'), 100, event)) {
                     if(!timer_m){
                         timer_m = true
                         inTime_m = new Date().getTime()
                     }
-                    if((((new Date().getTime())-inTime_m)/1000 > 2) &&timer_m) {
+                    if((((new Date().getTime())-inTime_m)/1000 > 1) &&timer_m) {
                         // fixate in target
                         stop = false
                         circle_count++
                         trigger_gaze(false)
-                        if(circle_count < site_list.length){
+                        if(circle_count < trial_count){
                             gen_circle(circle_count)
                         }
                         else{
@@ -72,6 +73,7 @@
                             var end = new Date().getTime() - taskStart;
                             console.log("Elapse time: "+(end/1000))
                         }
+                        hide_cursor(false)
                     }
 
                 } else {
@@ -85,12 +87,13 @@
                 // 2. end on count
             }
             //fail to select
-            if(stop){
-                if((((new Date().getTime())-stop_time)/1000 > 5) &&stop) {
+            if(stop && $('#marker').length){
+                if((((new Date().getTime())-stop_time)/1000 > 3) &&stop) {
                     stop = false
                     trigger_gaze(false)
                     $("#marker").remove()
                     $("#ressss").foggy(false)
+                    hide_cursor(false)
                 }
             }
         });
@@ -114,7 +117,7 @@
                     url: "http://localhost:3000/start_gaze",
                     data: {msg: "start", },
                     success: function (data) {
-                        console.log("Success");
+                        console.log("start");
                     },
                     dataType: "json"
                 });
@@ -124,10 +127,18 @@
                     url: "http://localhost:3000/stop_gaze",
                     data: {msg: "stop", },
                     success: function (data) {
-                        console.log("Success");
+                        console.log("stop");
                     },
                     dataType: "json"
                 });
+            }
+        }
+        function hide_cursor(on){
+            if(on){
+                document.body.style.cursor = 'none';
+            }
+            else{
+                document.body.style.cursor = '';
             }
         }
         function center1(ele) {
@@ -138,6 +149,11 @@
                 $(window).scrollLeft()) + "px");
             return ele;
         }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
 
         function gen_circle(num) {
             if ($('#ressss').length) {
@@ -150,13 +166,14 @@
             $('<div/>', {
                 id: "ressss",
                 "css": {
-                    "top": temp[0] + "px",
-                    "left": temp[1] + "px"
+                    "top": getRandomInt($(window).height() / 5, $(window).height() / 5*3.5) + "px", //temp[0]
+                    "left": getRandomInt($(window).width() / 5, $(window).width() / 5*3.5) + "px" //temp[1]
                 },
             }).appendTo('body');
 
         }
         function gen_marker(num) {
+            num = num%4
             $('#ressss').foggy(true)
             stop = true
             stop_time = new Date().getTime()
