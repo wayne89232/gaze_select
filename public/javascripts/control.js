@@ -31,6 +31,14 @@
             gen_circle(circle_count)
             taskStart = new Date().getTime()
         });
+        $("body").keypress(function(event) {
+            if (event.keyCode == 115) {
+                $("#btn1").hide();
+                gen_circle(circle_count)
+                taskStart = new Date().getTime()
+            }
+        });
+
         $("body").mousemove(function(event) {
             if ($('#ressss').length) {
                 if (isNear($('#ressss'), 10, event)) {
@@ -53,7 +61,7 @@
                 };
             }
             if($('#marker').length){
-                hide_cursor(true)
+                // hide_cursor(true)
                 if (isNear($('#marker'), 100, event)) {
                     if(!timer_m){
                         timer_m = true
@@ -63,7 +71,7 @@
                         // fixate in target
                         stop = false
                         circle_count++
-                        trigger_gaze(false)
+                        trigger_gaze(2)
                         if(circle_count < trial_count){
                             gen_circle(circle_count)
                         }
@@ -90,7 +98,7 @@
             if(stop && $('#marker').length){
                 if((((new Date().getTime())-stop_time)/1000 > 3) &&stop) {
                     stop = false
-                    trigger_gaze(false)
+                    trigger_gaze(3)
                     $("#marker").remove()
                     $("#ressss").foggy(false)
                     hide_cursor(false)
@@ -112,7 +120,7 @@
         };
 
         function trigger_gaze(on){
-            if(on){
+            if(on==1){
                 $.post({
                     url: "http://localhost:3000/start_gaze",
                     data: {msg: "start", },
@@ -122,12 +130,22 @@
                     dataType: "json"
                 });
             }
-            else{
+            else if (on==2) {
                 $.post({
                     url: "http://localhost:3000/stop_gaze",
                     data: {msg: "stop", },
                     success: function (data) {
                         console.log("stop");
+                    },
+                    dataType: "json"
+                });
+            }
+            else if (on==3) {
+                $.post({
+                    url: "http://localhost:3000/restart_gaze",
+                    data: {msg: "restart", },
+                    success: function (data) {
+                        console.log("restart");
                     },
                     dataType: "json"
                 });
@@ -197,7 +215,7 @@
             }).appendTo('body');
 
             //send zmq signal
-            trigger_gaze(true)
+            trigger_gaze(1)
 
         }
     });

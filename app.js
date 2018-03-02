@@ -43,6 +43,14 @@ app.post("/stop_gaze", function(req, res) {
   res.json({})
 });
 
+app.post("/restart_gaze", function(req, res) {
+  var not = {'subject':'task.restart', 'data':'time'}
+  var payload = serialize.serialize(not);
+  topic = 'web.' + not['subject']
+  sock1.send(topic)
+  res.json({})
+});
+
 var sock1 = zmq.socket("req");
 sock1.connect('tcp://localhost:50020');
 
