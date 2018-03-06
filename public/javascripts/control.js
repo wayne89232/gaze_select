@@ -10,6 +10,7 @@
         var inTime = 0
         var inTime_m = 0
         var taskStart = 0
+        var time_wasted = 0
         var site_list = [
             [$(window).height() / 5, $(window).width() / 5],
             [$(window).height() / 5, $(window).width() / 5 * 3.5],
@@ -78,7 +79,7 @@
                         else{
                             $("#marker").remove()
                             $("#ressss").remove()
-                            var end = new Date().getTime() - taskStart;
+                            var end = new Date().getTime() - taskStart - time_wasted;
                             console.log("Elapse time: "+(end/1000))
                         }
                         hide_cursor(false)
@@ -97,6 +98,8 @@
             //fail to select
             if(stop && $('#marker').length){
                 if((((new Date().getTime())-stop_time)/1000 > 3) &&stop) {
+                    time_wasted = time_wasted + (new Date().getTime()-inTime_m)
+                    print("wasted:"+(new Date().getTime()-inTime_m))
                     stop = false
                     trigger_gaze(3)
                     $("#marker").remove()
