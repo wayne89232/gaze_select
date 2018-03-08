@@ -1,7 +1,7 @@
     $(document).ready(function() {
         //your code here
 
-        var trial_count = 10
+        var trial_count = 15
         var circle_count = 0
         var timer = false
         var timer_m = false
@@ -10,7 +10,11 @@
         var inTime = 0
         var inTime_m = 0
         var taskStart = 0
+        var temp_time = 0
         var time_wasted = 0
+        var fails = []
+        var fail_count = 0
+        var pointing = []
         var site_list = [
             [$(window).height() / 5, $(window).width() / 5],
             [$(window).height() / 5, $(window).width() / 5 * 3.5],
@@ -37,6 +41,7 @@
                 $("#btn1").hide();
                 gen_circle(circle_count)
                 taskStart = new Date().getTime()
+                temp_time = new Date().getTime()
             }
         });
 
@@ -58,11 +63,10 @@
                 } else {
                     timer = false
                     $('#ressss').empty()
-
                 };
             }
             if($('#marker').length){
-                // hide_cursor(true)
+                hide_cursor(true)
                 if (isNear($('#marker'), 100, event)) {
                     if(!timer_m){
                         timer_m = true
@@ -81,13 +85,18 @@
                             $("#ressss").remove()
                             var end = new Date().getTime() - taskStart - time_wasted;
                             console.log("Elapse time: "+(end/1000))
+                            console.log("Fails: "+fails)
+                            console.log("Pointing: "+pointing)
                         }
+                        fails.push(fail_count)
+                        pointing.push((new Date().getTime() - temp_time)/1000)
+                        temp_time = new Date().getTime()
+                        fail_count = 0
                         hide_cursor(false)
                     }
 
                 } else {
                     timer_m = false
-
                 };
 
                 //new way to count
@@ -99,7 +108,8 @@
             if(stop && $('#marker').length){
                 if((((new Date().getTime())-stop_time)/1000 > 3) &&stop) {
                     time_wasted = time_wasted + (new Date().getTime()-inTime_m)
-                    print("wasted:"+(new Date().getTime()-inTime_m))
+                    fail_count++
+                    temp_time = new Date().getTime()
                     stop = false
                     trigger_gaze(3)
                     $("#marker").remove()
