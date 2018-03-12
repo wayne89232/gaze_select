@@ -1,7 +1,7 @@
     $(document).ready(function() {
         //your code here
 
-        var trial_count = 15
+        var trial_count = 10
         var circle_count = 0
         var timer = false
         var timer_m = false
@@ -24,8 +24,8 @@
         var marker_list = [
             [$(window).height() / 12, $(window).width() / 12],
             [$(window).height() / 12, $(window).width() / 12 * 11],
-            [$(window).height() / 12 * 11, $(window).width() / 12],
-            [$(window).height() / 12 * 11, $(window).width() / 12 * 11]
+            [$(window).height() / 12 * 11, $(window).width() / 12 * 11],
+            [$(window).height() / 12 * 11, $(window).width() / 12]
         ]
 
         center1($("#btn1"));
@@ -66,8 +66,8 @@
                 };
             }
             if($('#marker').length){
-                hide_cursor(true)
-                if (isNear($('#marker'), 100, event)) {
+                // hide_cursor(true)
+                if (isNear($('#marker'), 150, event)) {
                     if(!timer_m){
                         timer_m = true
                         inTime_m = new Date().getTime()
@@ -83,8 +83,9 @@
                         else{
                             $("#marker").remove()
                             $("#ressss").remove()
-                            var end = new Date().getTime() - taskStart - time_wasted;
+                            var end = new Date().getTime() - taskStart;
                             console.log("Elapse time: "+(end/1000))
+                            console.log("Elapse time without fail: "+((end-time_wasted)/1000))
                             console.log("Fails: "+fails)
                             console.log("Pointing: "+pointing)
                         }
@@ -106,7 +107,7 @@
             }
             //fail to select
             if(stop && $('#marker').length){
-                if((((new Date().getTime())-stop_time)/1000 > 3) &&stop) {
+                if((((new Date().getTime())-stop_time)/1000 > 5) &&stop) {
                     time_wasted = time_wasted + (new Date().getTime()-inTime_m)
                     fail_count++
                     temp_time = new Date().getTime()
